@@ -42,10 +42,14 @@ exports.get_call = function(req, res) {
                     });
                 }
             } else {
-                res.json({"message": "Check your database name"});
+                res.json(err);
+                var e =  errormap.sql_to_http[err['code']];
+                res.set({'status':'400 Bad Request',
+                          'sql-error-code':e,
+                          'sql-error-message':g
+                });
+                res.json({"message": e});
             }
-
-
         });
     }
 };
