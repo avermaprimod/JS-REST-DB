@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Jasmine Spec Runner</title>
+
+        <link rel="shortcut icon" type="image/png" href="lib/jasmine-1.2.0/jasmine_favicon.png">
+        <link rel="stylesheet" type="text/css" href="lib/jasmine-1.2.0/jasmine.css">
+        <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine.js"></script>
+        <script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+
+        <script> window.base_url= "http://localhost:3000/"</script>
+
+        <!-- include source files here... -->
+        <script type="text/javascript" src="src/simple.js"></script>
+
+
+        <!-- include spec files here... -->
+
+
+        <script type="text/javascript" src="spec/createdb.js"></script>
+        <script type="text/javascript" src="spec/create_table.js"></script>
+        <script type="text/javascript" src="spec/create_row.js"></script>
+        <script type="text/javascript" src="spec/create_row2.js"></script>
+        <script type="text/javascript" src="spec/create_row3.js"></script>
+        <script type="text/javascript" src="spec/create_row4.js"></script>
+        <script type="text/javascript" src="spec/create_row5.js"></script>
+        <script type="text/javascript" src="spec/create_row6.js"></script>
+        <script type="text/javascript" src="spec/view_specific_row.js"></script>
+        <script type="text/javascript" src="spec/view_all_rows.js"></script>
+        <script type="text/javascript" src="spec/read_limited.js"></script>
+        <script type="text/javascript" src="spec/orderby_read_asc.js"></script>
+        <script type="text/javascript" src="spec/orderby_read_desc.js"></script>
+        <script type="text/javascript" src="spec/create_table_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/create_table_noprimarykey.js"></script>
+        <script type="text/javascript" src="spec/create_row_nonexisting_columns.js"></script>
+        <script type="text/javascript" src="spec/delete_row_nonexistent_table.js"></script>
+        <script type="text/javascript" src="spec/delete_nonexisting_row.js"></script>
+        <script type="text/javascript" src="spec/delete_specific_row.js"></script>
+        <script type="text/javascript" src="spec/read_wrongid.js"></script>
+        <script type="text/javascript" src="spec/update_specific_row.js"></script>
+        <script type="text/javascript" src="spec/update_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/read_limit_higher.js"></script>
+        <script type="text/javascript" src="spec/read_limit_negative.js"></script>
+        <script type="text/javascript" src="spec/read_limit_string.js"></script>
+        <script type="text/javascript" src="spec/read_row_id_string.js"></script>
+        <script type="text/javascript" src="spec/read_row_like.js"></script>-->
+        <script type="text/javascript" src="spec/read_row_like_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/read_row_like_wrongcolumn.js"></script>
+        <script type="text/javascript" src="spec/read_row_like_wrongtable.js"></script>
+        <script type="text/javascript" src="spec/read_row_negativeid.js"></script>
+        <script type="text/javascript" src="spec/orderby_read_wrong_column_desc.js"></script>
+        <script type="text/javascript" src="spec/orderby_read_wrongcolumn_asc.js"></script>
+        <script type="text/javascript" src="spec/read_row_like_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/orderby_limitis_string_asc.js"></script>
+        <script type="text/javascript" src="spec/orderby_limitis_string_desc.js"></script>
+        <script type="text/javascript" src="spec/orderby_negativelimit_asc.js"></script>
+        <script type="text/javascript" src="spec/orderby_negativelimit_desc.js"></script>
+        <script type="text/javascript" src="spec/update_row_id_as_string.js"></script>
+        <script type="text/javascript" src="spec/update_row_negative_id.js"></script>
+        <script type="text/javascript" src="spec/update_row_nonexisting_id.js"></script>
+        <script type="text/javascript" src="spec/update_row_nonexisting_table.js"></script>
+        <script type="text/javascript" src="spec/update_row_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/delete_row_id_as_string.js"></script>
+        <script type="text/javascript" src="spec/delete_row_negative_id.js"></script>
+        <script type="text/javascript" src="spec/delete_row_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/test_xheader.js"></script>
+        <script type="text/javascript" src="spec/testheader.js"></script>
+        <script type="text/javascript" src="spec/test_xheader_unknowndb.js"></script>
+        <script type="text/javascript" src="spec/testheader_400.js"></script>
+        <script type="text/javascript" src="spec/delete_nonexistingdb.js"></script>
+        <script type="text/javascript" src="spec/delete_table"></script>
+        <script type="text/javascript" src="spec/deletedb"></script>
+
+        <script type="text/javascript">
+            (function() {
+                var jasmineEnv = jasmine.getEnv();
+                jasmineEnv.updateInterval = 1000;
+
+                var htmlReporter = new jasmine.HtmlReporter();
+
+                jasmineEnv.addReporter(htmlReporter);
+
+                jasmineEnv.specFilter = function(spec) {
+                    return htmlReporter.specFilter(spec);
+                };
+
+                var currentWindowOnload = window.onload;
+
+                window.onload = function() {
+                    if (currentWindowOnload) {
+                        currentWindowOnload();
+                    }
+                    execJasmine();
+                };
+
+                function execJasmine() {
+                    jasmineEnv.execute();
+                }
+
+            })();
+            Array.prototype.isSorted = function() {
+                return (function(direction) {
+                    return this.reduce(function(prev, next, i, arr) {
+                        if (direction === undefined)
+                            return (direction = prev <= next ? 1 : -1) || true;
+                        else
+                            return (direction + 1 ?
+                            (arr[i-1] <= next) : 
+                            (arr[i-1] >  next));
+                    }) ? Number(direction) : false;
+                }).call(this);
+            }
+        </script>
+
+    </head>
+
+    <body>
+
+    </body>
+</html>
