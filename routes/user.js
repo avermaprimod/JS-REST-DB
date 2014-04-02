@@ -14,11 +14,32 @@ exports.get_call = function(req, res) {
         // if requested database exists we gonna "use" that database
         connection.query('USE ' + req.param("db_name"), function(err, rows) {
             if (!err) {
+
                 if (typeof (req.param("table_name")) !== 'undefined') {
-                    if (typeof (req.query.limit) !== 'undefined') {
+                    if ((typeof (req.query.limit) !== 'undefined') && (typeof (req.query.by) == 'undefined') && (typeof (req.query.order) == 'undefined')) {
                         // if limit we gonna put limit in query
                         connection.query('SELECT * FROM ' + req.param("table_name") + ' LIMIT ' + req.query.limit, function(err, rows) {
                             if (!err) {
+                                res.set({'status': '200 OK'});
+                                res.json({"data": rows});
+                            } else {
+                                var e = errormap.sql_to_http[err['code']];
+                                var msg = err['code'];
+                                var message = {'status': '400 Bad Request',
+                                    'X-Sql-Error-Code': e,
+                                    'X-Sql-Error-Message': msg
+                                };
+                                res.set(message);
+                                res.json(message);
+
+                            }
+
+                        });
+                    }
+                    if ((typeof (req.query.limit) !== 'undefined') && (typeof (req.query.by) !== 'undefined') && (typeof (req.query.order) == 'undefined')) {
+                        connection.query('SELECT * FROM ' + req.param("table_name") + ' ORDER BY ' + req.query.by + ' LIMIT ' + req.query.limit, function(err, rows) {
+                            if (!err) {
+                                res.set({'status': '200 OK'});
                                 res.json({"data": rows});
                             } else {
                                 var e = errormap.sql_to_http[err['code']];
@@ -41,6 +62,7 @@ exports.get_call = function(req, res) {
                             // if order by field name and limit comes we gonna put order by amd limit in query
                             connection.query('SELECT * FROM ' + req.param("table_name") + ' ORDER BY ' + req.query.by + ' ' + req.query.order + ' LIMIT ' + req.query.limit, function(err, rows) {
                                 if (!err) {
+                                    res.set({'status': '200 OK'});
                                     res.json({"data": rows});
                                 } else {
                                     var e = errormap.sql_to_http[err['code']];
@@ -59,6 +81,7 @@ exports.get_call = function(req, res) {
                             // if order by field name comes we gonna put order by in query
                             connection.query('SELECT * FROM ' + req.param("table_name") + ' ORDER BY ' + req.query.by + ' ' + req.query.order, function(err, rows) {
                                 if (!err) {
+                                    res.set({'status': '200 OK'});
                                     res.json({"data": rows});
                                 } else {
                                     var e = errormap.sql_to_http[err['code']];
@@ -77,24 +100,26 @@ exports.get_call = function(req, res) {
 
 
                     }
+                    if ((typeof (req.param("table_name")) !== 'undefined') && (typeof (req.query.limit) == 'undefined') && (typeof (req.query.by) == 'undefined') && (typeof (req.query.order) == 'undefined')) {
+                        // if table name exists we gonna execute    
+                        connection.query('SELECT * FROM ' + req.param("table_name"), function(err, rows) {
+                            if (!err) {
+                                res.set({'status': '200 OK'});
+                                res.json({"data": rows});
+                            } else {
+                                var e = errormap.sql_to_http[err['code']];
+                                var msg = err['code'];
+                                var message = {'status': '400 Bad Request',
+                                    'X-Sql-Error-Code': e,
+                                    'X-Sql-Error-Message': msg
+                                };
+                                res.set(message);
+                                res.json(message);
 
-                    // if table name exists we gonna execute    
-                    connection.query('SELECT * FROM ' + req.param("table_name"), function(err, rows) {
-                        if (!err) {
-                            res.json({"data": rows});
-                        } else {
-                            var e = errormap.sql_to_http[err['code']];
-                            var msg = err['code'];
-                            var message = {'status': '400 Bad Request',
-                                'X-Sql-Error-Code': e,
-                                'X-Sql-Error-Message': msg
-                            };
-                            res.set(message);
-                            res.json(message);
+                            }
 
-                        }
-
-                    });
+                        });
+                    }
                 }
             } else {
                 var e = errormap.sql_to_http[err['code']];
@@ -121,6 +146,7 @@ exports.get_callbyid = function(req, res) {
                     // if table name exists we gonna execute 
                     connection.query('SELECT * FROM ' + req.param("table_name") + ' WHERE id = ' + req.param("id"), function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json({"data": rows});
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -164,6 +190,7 @@ exports.get_callbylike = function(req, res) {
                     // if table name exists we gonna execute 
                     connection.query('SELECT * FROM ' + req.param("table_name") + ' WHERE ' + req.param("column_name") + ' LIKE "%' + req.param("value") + '%"', function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json({"data": rows});
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -233,6 +260,7 @@ exports.insert_into = function(req, res) {
                     console.log(query);
                     connection.query(query, function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json(rows);
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -290,6 +318,7 @@ exports.update_byid = function(req, res) {
                     query += ' WHERE id = ' + req.param('id');
                     connection.query(query, function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json({data: rows});
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -334,6 +363,7 @@ exports.delete_byid = function(req, res) {
 
                     connection.query('DELETE FROM ' + req.param('table_name') + ' WHERE id = ' + req.param('id'), function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json({data: rows});
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -373,6 +403,7 @@ exports.create_db = function(req, res) {
     if (typeof (req.param('db_name')) !== 'undefined') {
         connection.query('CREATE DATABASE ' + req.param('db_name'), function(err, rows) {
             if (!err) {
+                res.set({'status': '200 OK'});
                 res.json(rows);
                 //res.json({'message': "Database created successfully"});
 
@@ -402,6 +433,7 @@ exports.create_table = function(req, res) {
                     query += 'PRIMARY KEY(' + req.param('primary_key') + ') )';
                     connection.query(query, function(err, rows) {
                         if (!err) {
+                            res.set({'status': '200 OK'});
                             res.json(rows);
                         } else {
                             var e = errormap.sql_to_http[err['code']];
@@ -437,6 +469,7 @@ exports.delete_db = function(req, res) {
     if (typeof (req.param('db_name')) !== 'undefined') {
         connection.query('DROP DATABASE ' + req.param('db_name'), function(err, rows) {
             if (!err) {
+                res.set({'status': '200 OK'});
                 res.json(rows);
             } else {
                 var e = errormap.sql_to_http[err['code']];
@@ -458,11 +491,28 @@ exports.delete_db = function(req, res) {
 exports.delete_table = function(req, res) {
     if (typeof (req.param('db_name')) !== 'undefined') {
         connection.query('USE ' + req.param("db_name"), function(err, rows) {
-            if (typeof (req.param('table_name')) !== 'undefined') {
-                connection.query('DROP TABLE ' + req.param('table_name'), function(err, rows) {
-                    res.json({'message': 'rows'});
-                });
+            if (!err) {
+                if (typeof (req.param('table_name')) !== 'undefined') {
+                    connection.query('DROP TABLE ' + req.param('table_name'), function(err, rows) {
+                        res.set({'status': '200 OK'});
+                        res.json({'data': rows});
+                    });
+                }
+
+            } else {
+                var e = errormap.sql_to_http[err['code']];
+                var msg = err['code'];
+                var message = {'status': '400 Bad Request',
+                    'X-Sql-Error-Code': e,
+                    'X-Sql-Error-Message': msg
+                };
+                res.set(message);
+                res.json(message);
+
             }
+
         });
+    } else {
+        res.set({'status': '400 Bad Request'});
     }
 };
