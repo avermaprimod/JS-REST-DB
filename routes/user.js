@@ -44,9 +44,10 @@ exports.get_call = function(req, res) {
             } else {
                 res.json(err);
                 var e =  errormap.sql_to_http[err['code']];
+                var msg = err['code'];
                 res.set({'status':'400 Bad Request',
                           'sql-error-code':e,
-                          'sql-error-message':g
+                          'sql-error-message':msg
                 });
                 res.json({"message": e});
             }
